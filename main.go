@@ -18,7 +18,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-//go:embed frontend/public
+//go:embed assets/icon.png
 var iconFS embed.FS
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
@@ -66,7 +66,7 @@ func main() {
 	systray := app.NewSystemTray()
 	systray.SetLabel("SCION")
 	// Read icon data
-	iconBytes, _ := iconFS.ReadFile("scion_icon.png")
+	iconBytes, _ := iconFS.ReadFile("assets/icon.png")
 	//darkModeIconBytes, _ := iconFS.ReadFile("assets/icon-dark.png")
 	systray.SetIcon(iconBytes)
 	systray.SetDarkModeIcon(iconBytes)
