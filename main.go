@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"changeme/bootstrapper"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -16,6 +17,9 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+//go:embed frontend/public
+var iconFS embed.FS
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
 // and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
@@ -47,8 +51,10 @@ func main() {
 	// 'BackgroundColour' is the background colour of the window.
 	// 'URL' is the URL that will be loaded into the webview.
 	app.NewWebviewWindowWithOptions(application.WebviewWindowOptions{
-		Title:     "Window 1",
+		Title:     "SCION Desktop",
 		Frameless: false,
+		Width:     1300,
+		Height:    700,
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
@@ -57,6 +63,24 @@ func main() {
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
 	})
+	systray := app.NewSystemTray()
+	systray.SetLabel("SCION")
+	// Read icon data
+	iconBytes, _ := iconFS.ReadFile("scion_icon.png")
+	//darkModeIconBytes, _ := iconFS.ReadFile("assets/icon-dark.png")
+	systray.SetIcon(iconBytes)
+	systray.SetDarkModeIcon(iconBytes)
+	//systray.("SCION is running")
+
+	menu := application.NewMenu()
+	menu.Add("Open").OnClick(func(ctx *application.Context) {
+		// Handle click
+	})
+	menu.Add("Quit").OnClick(func(ctx *application.Context) {
+		app.Quit()
+	})
+
+	systray.SetMenu(menu)
 
 	// Create a goroutine that emits an event containing the current time every second.
 	// The frontend can listen to this event and update the UI accordingly.
@@ -67,7 +91,8 @@ func main() {
 			time.Sleep(time.Second)
 		}
 	}()
-
+	//TODO: proper dependency injection
+	bootstrapper.App = app
 	// Run the application. This blocks until the application has been exited.
 	err := app.Run()
 

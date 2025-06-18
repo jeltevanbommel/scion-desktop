@@ -30,3 +30,11 @@ export function IsAdmin() {
     let $resultPromise = /** @type {any} */($Call.ByID(3232019819));
     return $resultPromise;
 }
+
+/**
+ * @returns {Promise<void> & { cancel(): void }}
+ */
+export function StartBootstrapper() {
+    let $resultPromise = /** @type {any} */($Call.ByID(683016517));
+    return $resultPromise;
+}
